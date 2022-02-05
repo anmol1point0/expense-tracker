@@ -1,5 +1,6 @@
 package com.example.expenseTracker.services;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -81,6 +82,26 @@ public class ExpenseService {
         List<Transaction> usertransactions = transactionsRepository.findFirstByUid(uid);
         return usertransactions;
     }
+
+    public List<Transaction> getAllUnsettledTransaction(String uid){
+        return transactionsRepository.findFirstByUidAndDueSettled(uid);
+    }
+
+    /*
+        method
+         1: First in first out - the due added first will be paid first
+         2: Latest repayment date first - the due that is nearest will be paid first
+    */
+    // public void settleDues(String uid, BigDecimal amount, Integer method){
+    //     //Getting all the unsettled transactions for a given user.
+    //     List<Transaction> userTransactions = getAllUnsettledTransaction(uid);
+    //     switch(method){
+    //         case 1:
+    //             userTransactions = 
+    //             break;
+            
+    //     }
+    // }
     
     public static void main(String[] args){
         ExpenseService userService = new ExpenseService();

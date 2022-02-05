@@ -34,4 +34,10 @@ public class User {
         List<Transaction> usertransactions = expenseService.getUserTransactions(this.getUid());
         return usertransactions;
     }
+
+    public List<Transaction> getUserUnsettledTransactions(ExpenseService expenseService){
+        this.expenseService = expenseService;
+        List<Transaction> usertransactions = expenseService.getAllUnsettledTransaction(this.getUid());
+        return usertransactions;
+    }
 }

@@ -59,7 +59,7 @@ public class ExpenseController {
     }
 
    @GetMapping("/transaction")
-   public ResponseEntity<List<Transaction>> getUserTransactions(){
+   public ResponseEntity<List<Transaction>> getUserTransactionsHistory(){
        List<Transaction> userTransactions;
        if(Objects.isNull(user)){
             userTransactions = null;
@@ -69,5 +69,18 @@ public class ExpenseController {
            userTransactions = user.getUserTransactions(expenseService);
            return new ResponseEntity<>(userTransactions ,HttpStatus.OK);
        }
+   }
+
+   @GetMapping("/dues")
+   public ResponseEntity<List<Transaction>> getUserUnsettledTransactions(){
+        List<Transaction> userUnsettledTransactions;
+        if(Objects.isNull(user)){
+            userUnsettledTransactions = null;
+            return new ResponseEntity<>(userUnsettledTransactions ,HttpStatus.BAD_REQUEST);
+        }
+        else{
+            userUnsettledTransactions = user.getUserUnsettledTransactions(expenseService);
+            return new ResponseEntity<>(userUnsettledTransactions ,HttpStatus.OK);
+        }
    }
 }
