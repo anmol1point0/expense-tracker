@@ -27,9 +27,10 @@ public class Expense {
     private BigDecimal paidAmount;
     private BigDecimal duePayment;
     private String paymentMethod;
-    private String name;
-    private Boolean isExpensePayment;
+    private String itemName;
+    private ExpenseType expenseType;
     private Boolean isSettled;
+    private String recipient;
 
     // @JsonDeserialize(using = LocalDateDeserializer.class)
     // @JsonSerialize(using = LocalDateSerializer.class)

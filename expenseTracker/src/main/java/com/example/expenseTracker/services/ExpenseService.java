@@ -16,6 +16,7 @@ import com.example.expenseTracker.DAO.UserRepository;
 import com.example.expenseTracker.models.Due;
 import com.example.expenseTracker.models.Expense;
 import com.example.expenseTracker.models.ExpenseRequest;
+import com.example.expenseTracker.models.ExpenseType;
 import com.example.expenseTracker.models.User;
 
 import org.apache.tomcat.jni.Local;
@@ -32,12 +33,6 @@ public class ExpenseService {
 
     @Autowired
     private ExpensesRepository expensesRepository;
-
-    // <ExpenseRequest, Due> List<Due> mapList(List<ExpenseRequest> source,
-    // Class<Due> targetClass) {
-    // return source.stream().map(element -> modelMapper.map(element,
-    // targetClass)).collect(Collectors.toList());
-    // }
 
     /*
      * Purpose: Get the user in DB by their email Address
@@ -107,7 +102,7 @@ public class ExpenseService {
     public List<Expense> getUserExpenses(String uid) {
         System.out.println("transactionRepositopry is :" + expensesRepository);
         System.out.println("uid: " + uid);
-        List<Expense> usertransactions = expensesRepository.findByUidAndExpense(uid, true);
+        List<Expense> usertransactions = expensesRepository.findByUidAndExpense(uid, ExpenseType.EXPENSE);
         return usertransactions;
     }
 
@@ -129,7 +124,7 @@ public class ExpenseService {
         duePaidRequest.setExpense(duePayment);
         duePaidRequest.setPaidAmount(duePayment);
         duePaidRequest.setPaymentTimestamp(LocalDateTime.now());
-        duePaidRequest.setIsExpensePayment(false);
+        duePaidRequest.setExpenseType(ExpenseType.DUE);
         duePaidRequest.setPaymentMethod(paymentGateway);
         duePaidRequest.setIsSettled(true);
         duePaidRequest.setDuePayment(BigDecimal.valueOf(0.0));
@@ -138,7 +133,7 @@ public class ExpenseService {
 
     private boolean duesSettleInorder(List<Due> userDues, BigDecimal amount, String paymentGateway) {
         for (Due userDue : userDues) {
-            System.out.println("user is :" + userDue.getName());
+            System.out.println("user is :" + userDue.getItemName());
             BigDecimal duePayment = userDue.getDuePayment();
             String expenseId = userDue.getExpenseId();
             Optional<ExpenseRequest> expenseRequestOptional = expensesRepository.findById(expenseId);

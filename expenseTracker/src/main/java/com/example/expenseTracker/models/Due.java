@@ -20,13 +20,14 @@ public class Due implements Comparable<Due> {
 
     private String uid;
     private String expenseId;
-    private String name;
+    private String itemName;
     private BigDecimal duePayment;
     private LocalDate dueDate;
+    private String recipient;
 
-    public Due(String uid, String name, BigDecimal duePayment, LocalDate dueDate) {
+    public Due(String uid, String itemName, BigDecimal duePayment, LocalDate dueDate) {
         this.uid = uid;
-        this.name = name;
+        this.itemName = itemName;
         this.duePayment = duePayment;
         this.dueDate = dueDate;
     }

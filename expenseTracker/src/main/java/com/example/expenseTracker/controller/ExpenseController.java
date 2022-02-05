@@ -7,6 +7,7 @@ import com.example.expenseTracker.models.Due;
 import com.example.expenseTracker.models.DueRequest;
 import com.example.expenseTracker.models.Expense;
 import com.example.expenseTracker.models.ExpenseRequest;
+import com.example.expenseTracker.models.ExpenseType;
 import com.example.expenseTracker.models.User;
 import com.example.expenseTracker.services.ExpenseService;
 
@@ -53,7 +54,7 @@ public class ExpenseController {
         if (Objects.isNull(user)) {
             return new ResponseEntity<>("Please login to record a transaction ", HttpStatus.BAD_REQUEST);
         }
-        transactionRequest.setIsExpensePayment(true);
+        transactionRequest.setExpenseType(ExpenseType.EXPENSE);
         transactionRequest.setUid(user.getUid());
         expenseService.recordTransaction(transactionRequest);
         return new ResponseEntity<>("Transaction is recorded succesfully for user: " + user.getUserName(),

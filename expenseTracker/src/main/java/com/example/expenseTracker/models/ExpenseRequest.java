@@ -3,7 +3,6 @@ package com.example.expenseTracker.models;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -19,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
 @JsonIgnoreProperties
 @AllArgsConstructor
@@ -28,7 +28,7 @@ public class ExpenseRequest {
     @Id
     private String expenseId;
     private String uid;
-    private String name;
+    private String itemName;
     private BigDecimal expense;
     private BigDecimal paidAmount;
     private BigDecimal duePayment;
@@ -36,7 +36,8 @@ public class ExpenseRequest {
     private LocalDateTime paymentTimestamp;
     private LocalDate dueDate;
     private Boolean isSettled;
-    private Boolean isExpensePayment;
+    private ExpenseType expenseType;
+    private String recipient;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     @JsonDeserialize(using = LocalDateDeserializer.class)
@@ -50,7 +51,8 @@ public class ExpenseRequest {
      */
     public ExpenseRequest(ExpenseRequest expenseRequest) {
         this.uid = expenseRequest.getUid();
-        this.name = expenseRequest.getName();
+        this.recipient = expenseRequest.getRecipient();
+        this.itemName = expenseRequest.getItemName();
         this.expense = expenseRequest.getExpense();
         this.paidAmount = expenseRequest.getPaidAmount();
         this.duePayment = expenseRequest.getDuePayment();
@@ -58,6 +60,6 @@ public class ExpenseRequest {
         this.paymentTimestamp = expenseRequest.getPaymentTimestamp();
         this.dueDate = expenseRequest.getDueDate();
         this.isSettled = expenseRequest.getIsSettled();
-        this.isExpensePayment = expenseRequest.getIsExpensePayment();
+        this.expenseType = expenseRequest.getExpenseType();
     }
 }
