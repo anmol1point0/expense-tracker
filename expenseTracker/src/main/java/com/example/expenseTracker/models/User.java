@@ -2,8 +2,10 @@ package com.example.expenseTracker.models;
 
 import java.util.List;
 
-import com.example.expenseTracker.DAO.TrasactionsRepository;
+import com.example.expenseTracker.DAO.TransactionsRepository;
 import com.example.expenseTracker.DAO.UserRepository;
+import com.example.expenseTracker.services.ExpenseService;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
@@ -17,6 +19,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties
 public class User {
 
     @Id
@@ -24,12 +27,11 @@ public class User {
     private String emailAddress;
     private String userName;
 
-    @Autowired
-    private TrasactionsRepository trasactionsRepository;
+    private ExpenseService expenseService;
 
-    public List<Transaction> getUserTransactions(){
-        System.out.println("transactionRepositopry is :" + trasactionsRepository);
-        List<Transaction> usertransactions = trasactionsRepository.findFirstByUid(this.uid);
+    public List<Transaction> getUserTransactions(ExpenseService expenseService){
+        this.expenseService = expenseService;
+        List<Transaction> usertransactions = expenseService.getUserTransactions(this.getUid());
         return usertransactions;
     }
 }

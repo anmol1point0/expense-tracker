@@ -20,13 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class ExpenseController {
 
     @Autowired
-    private ExpenseService userService;
+    private ExpenseService expenseService;
 
     private User user;
     
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody User user){
-        Boolean userRegistered = userService.registerUser(user);
+        Boolean userRegistered = expenseService.registerUser(user);
         if(userRegistered){
             return new ResponseEntity<>("User: " + user.getUserName() + " successfully registered" ,HttpStatus.OK);
         }
@@ -37,7 +37,7 @@ public class ExpenseController {
 
     @GetMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody String emailAddress){
-        user = userService.login(emailAddress);
+        user = expenseService.login(emailAddress);
         if(Objects.isNull(user)){
             return new ResponseEntity<>("Email: " + emailAddress + " not Present in DB, Please register First" ,HttpStatus.BAD_REQUEST);
         }
@@ -53,7 +53,7 @@ public class ExpenseController {
         }
         System.out.println("transaction request is " + transactionRequest.getDueSettled());
         transactionRequest.setUid(user.getUid());
-        userService.recordTransaction(transactionRequest);
+        expenseService.recordTransaction(transactionRequest);
         return new ResponseEntity<>("Transaction is recorded succesfully for user: " + user.getUserName() ,HttpStatus.OK);
         
     }
@@ -65,7 +65,7 @@ public class ExpenseController {
             userTransactions = null;
        }
        else{
-           userTransactions = user.getUserTransactions();
+           userTransactions = user.getUserTransactions(expenseService);
        }
        return userTransactions;
    }

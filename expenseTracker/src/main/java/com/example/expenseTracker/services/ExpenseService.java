@@ -1,10 +1,12 @@
 package com.example.expenseTracker.services;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
-import com.example.expenseTracker.DAO.TrasactionsRepository;
+import com.example.expenseTracker.DAO.TransactionsRepository;
 import com.example.expenseTracker.DAO.UserRepository;
+import com.example.expenseTracker.models.Transaction;
 import com.example.expenseTracker.models.TransactionRequest;
 import com.example.expenseTracker.models.User;
 
@@ -19,7 +21,7 @@ public class ExpenseService {
     private UserRepository userRepository;
 
     @Autowired
-    private TrasactionsRepository trasactionsRepository;
+    private TransactionsRepository transactionsRepository;
 
     /*
             Purpose: Get the user in DB by their email Address
@@ -70,10 +72,16 @@ public class ExpenseService {
     }
 
     public void recordTransaction(TransactionRequest transactionRequest){
-        trasactionsRepository.save(transactionRequest);
         setup(transactionRequest);
+        transactionsRepository.save(transactionRequest);
     }
 
+    public List<Transaction> getUserTransactions(String uid){
+        System.out.println("transactionRepositopry is :" + transactionsRepository);
+        List<Transaction> usertransactions = transactionsRepository.findFirstByUid(uid);
+        return usertransactions;
+    }
+    
     public static void main(String[] args){
         ExpenseService userService = new ExpenseService();
         User user = userService.getUser("random");
