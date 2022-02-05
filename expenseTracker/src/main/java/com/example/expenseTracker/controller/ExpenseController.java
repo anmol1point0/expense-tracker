@@ -59,14 +59,15 @@ public class ExpenseController {
     }
 
    @GetMapping("/transaction")
-   public List<Transaction> getUserTransactions(){
+   public ResponseEntity<List<Transaction>> getUserTransactions(){
        List<Transaction> userTransactions;
        if(Objects.isNull(user)){
             userTransactions = null;
+            return new ResponseEntity<>(userTransactions ,HttpStatus.BAD_REQUEST);
        }
        else{
            userTransactions = user.getUserTransactions(expenseService);
+           return new ResponseEntity<>(userTransactions ,HttpStatus.OK);
        }
-       return userTransactions;
    }
 }
