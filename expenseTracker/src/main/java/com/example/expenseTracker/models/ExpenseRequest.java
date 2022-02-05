@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Document(collection = "expenses")
 public class ExpenseRequest {
     @Id
-    private String transactionId;
+    private String expenseId;
     private String uid;
     private String name;
     private BigDecimal expense;
@@ -39,7 +39,25 @@ public class ExpenseRequest {
     private Boolean isExpensePayment;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    @JsonDeserialize(using = LocalDateDeserializer.class)  
-    @JsonSerialize(using = LocalDateSerializer.class) 
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate dueTimestamp;
+
+    /*
+     * Setting up a constructor to make a copy of an existing expense request
+     * object.
+     * Used while setting dues.
+     */
+    public ExpenseRequest(ExpenseRequest expenseRequest) {
+        this.uid = expenseRequest.getUid();
+        this.name = expenseRequest.getName();
+        this.expense = expenseRequest.getExpense();
+        this.paidAmount = expenseRequest.getPaidAmount();
+        this.duePayment = expenseRequest.getDuePayment();
+        this.paymentMethod = expenseRequest.getPaymentMethod();
+        this.paymentTimestamp = expenseRequest.getPaymentTimestamp();
+        this.dueDate = expenseRequest.getDueDate();
+        this.isSettled = expenseRequest.getIsSettled();
+        this.isExpensePayment = expenseRequest.getIsExpensePayment();
+    }
 }

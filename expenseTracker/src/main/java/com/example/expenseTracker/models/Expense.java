@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Transaction {
+public class Expense {
     @Id
     private String transactionId;
     private String uid;
@@ -29,14 +29,14 @@ public class Transaction {
     private String paymentMethod;
     private String name;
     private Boolean isExpensePayment;
+    private Boolean isSettled;
 
-    
-    // @JsonDeserialize(using = LocalDateDeserializer.class)  
-    // @JsonSerialize(using = LocalDateSerializer.class) 
+    // @JsonDeserialize(using = LocalDateDeserializer.class)
+    // @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDateTime paymentTimestamp;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    @JsonDeserialize(using = LocalDateDeserializer.class)  
-    @JsonSerialize(using = LocalDateSerializer.class) 
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate dueTimestamp;
 }

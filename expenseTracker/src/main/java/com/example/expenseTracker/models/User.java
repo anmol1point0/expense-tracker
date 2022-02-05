@@ -28,16 +28,21 @@ public class User {
 
     private ExpenseService expenseService;
 
-    public List<Transaction> getUserExpenses(ExpenseService expenseService){
+    public List<Expense> getUserExpenses(ExpenseService expenseService) {
         this.expenseService = expenseService;
-        List<Transaction> usertransactions = expenseService.getUserExpenses(this.getUid());
+        List<Expense> usertransactions = expenseService.getUserExpenses(this.getUid());
         return usertransactions;
     }
 
-    public List<Due> getUserDues(ExpenseService expenseService){
+    public List<Expense> getUserSettledDues(ExpenseService expenseService) {
+        this.expenseService = expenseService;
+        List<Expense> usertransactions = expenseService.getAllSettledDues(this.getUid());
+        return usertransactions;
+    }
+
+    public List<Due> getUserDues(ExpenseService expenseService) {
         this.expenseService = expenseService;
         System.out.println("Reached here");
         return expenseService.getAllDues(this.getUid());
     }
 }
-
