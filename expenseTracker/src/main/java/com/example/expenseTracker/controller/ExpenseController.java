@@ -3,8 +3,9 @@ package com.example.expenseTracker.controller;
 import java.util.List;
 import java.util.Objects;
 
+import com.example.expenseTracker.models.Due;
 import com.example.expenseTracker.models.Transaction;
-import com.example.expenseTracker.models.TransactionRequest;
+import com.example.expenseTracker.models.ExpenseRequest;
 import com.example.expenseTracker.models.User;
 import com.example.expenseTracker.services.ExpenseService;
 
@@ -46,41 +47,42 @@ public class ExpenseController {
         }
     }
 
-    @PostMapping("/transaction")
-    public ResponseEntity<String> doTransaction(@RequestBody TransactionRequest transactionRequest){
+    @PostMapping("/expense")
+    public ResponseEntity<String> recordExpense(@RequestBody ExpenseRequest transactionRequest){
         if(Objects.isNull(user)){
             return new ResponseEntity<>("Please login to record a transaction " ,HttpStatus.BAD_REQUEST);
         }
-        System.out.println("transaction request is " + transactionRequest.getDueSettled());
+        transactionRequest.setIsExpensePayment(true);
         transactionRequest.setUid(user.getUid());
         expenseService.recordTransaction(transactionRequest);
         return new ResponseEntity<>("Transaction is recorded succesfully for user: " + user.getUserName() ,HttpStatus.OK);
         
     }
 
-   @GetMapping("/transaction")
-   public ResponseEntity<List<Transaction>> getUserTransactionsHistory(){
+   @GetMapping("/expense")
+   public ResponseEntity<List<Transaction>> getUserExpenseHistory(){
        List<Transaction> userTransactions;
        if(Objects.isNull(user)){
             userTransactions = null;
             return new ResponseEntity<>(userTransactions ,HttpStatus.BAD_REQUEST);
        }
        else{
-           userTransactions = user.getUserTransactions(expenseService);
+           userTransactions = user.getUserExpenses(expenseService);
            return new ResponseEntity<>(userTransactions ,HttpStatus.OK);
        }
    }
 
    @GetMapping("/dues")
-   public ResponseEntity<List<Transaction>> getUserUnsettledTransactions(){
-        List<Transaction> userUnsettledTransactions;
+   public ResponseEntity<List<Due>> getUserUnsettledTransactions(){
+        List<Due> userUnsettledTransactions;
         if(Objects.isNull(user)){
             userUnsettledTransactions = null;
             return new ResponseEntity<>(userUnsettledTransactions ,HttpStatus.BAD_REQUEST);
         }
         else{
-            userUnsettledTransactions = user.getUserUnsettledTransactions(expenseService);
+            userUnsettledTransactions = user.getUserDues(expenseService);
             return new ResponseEntity<>(userUnsettledTransactions ,HttpStatus.OK);
         }
    }
+
 }

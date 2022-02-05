@@ -2,7 +2,6 @@ package com.example.expenseTracker.models;
 
 import java.util.List;
 
-import com.example.expenseTracker.DAO.TransactionsRepository;
 import com.example.expenseTracker.DAO.UserRepository;
 import com.example.expenseTracker.services.ExpenseService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -29,15 +28,16 @@ public class User {
 
     private ExpenseService expenseService;
 
-    public List<Transaction> getUserTransactions(ExpenseService expenseService){
+    public List<Transaction> getUserExpenses(ExpenseService expenseService){
         this.expenseService = expenseService;
-        List<Transaction> usertransactions = expenseService.getUserTransactions(this.getUid());
+        List<Transaction> usertransactions = expenseService.getUserExpenses(this.getUid());
         return usertransactions;
     }
 
-    public List<Transaction> getUserUnsettledTransactions(ExpenseService expenseService){
+    public List<Due> getUserDues(ExpenseService expenseService){
         this.expenseService = expenseService;
-        List<Transaction> usertransactions = expenseService.getAllUnsettledTransaction(this.getUid());
-        return usertransactions;
+        System.out.println("Reached here");
+        return expenseService.getAllDues(this.getUid());
     }
 }
+

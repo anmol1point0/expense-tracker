@@ -22,10 +22,13 @@ import lombok.NoArgsConstructor;
 public class Transaction {
     @Id
     private String transactionId;
+    private String uid;
     private BigDecimal expense;
-    private Boolean dueSettled;
     private BigDecimal paidAmount;
+    private BigDecimal duePayment;
     private String paymentMethod;
+    private String name;
+    private Boolean isExpensePayment;
 
     
     // @JsonDeserialize(using = LocalDateDeserializer.class)  

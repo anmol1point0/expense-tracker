@@ -23,19 +23,20 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "transactions")
-public class TransactionRequest {
+@Document(collection = "expenses")
+public class ExpenseRequest {
     @Id
     private String transactionId;
     private String uid;
+    private String name;
     private BigDecimal expense;
-    private Boolean dueSettled;
     private BigDecimal paidAmount;
+    private BigDecimal duePayment;
     private String paymentMethod;
-
-    // @JsonDeserialize(using = LocalDateDeserializer.class)  
-    // @JsonSerialize(using = LocalDateSerializer.class) 
     private LocalDateTime paymentTimestamp;
+    private LocalDate dueDate;
+    private Boolean isSettled;
+    private Boolean isExpensePayment;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     @JsonDeserialize(using = LocalDateDeserializer.class)  
