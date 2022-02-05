@@ -102,6 +102,7 @@ public class ExpenseController {
         }
     }
 
+    @GetMapping("/duesHistory")
     public ResponseEntity<List<Expense>> getSettlesDuesList() {
         List<Expense> settledDues;
         if (Objects.isNull(user)) {
