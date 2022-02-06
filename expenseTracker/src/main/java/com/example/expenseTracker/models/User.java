@@ -2,11 +2,9 @@ package com.example.expenseTracker.models;
 
 import java.util.List;
 
-import com.example.expenseTracker.DAO.UserRepository;
 import com.example.expenseTracker.services.ExpenseService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -42,7 +40,7 @@ public class User {
 
     public List<Due> getUserDues(ExpenseService expenseService) {
         this.expenseService = expenseService;
-        System.out.println("Reached here");
         return expenseService.getAllDues(this.getUid());
     }
+
 }

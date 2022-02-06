@@ -18,7 +18,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @JsonIgnoreProperties
 @AllArgsConstructor
@@ -34,15 +33,14 @@ public class ExpenseRequest {
     private BigDecimal duePayment;
     private String paymentMethod;
     private LocalDateTime paymentTimestamp;
-    private LocalDate dueDate;
-    private Boolean isSettled;
-    private ExpenseType expenseType;
-    private String recipient;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
-    private LocalDate dueTimestamp;
+    private LocalDate dueDate;
+    private Boolean isSettled;
+    private ExpenseType expenseType;
+    private String recipient;
 
     /*
      * Setting up a constructor to make a copy of an existing expense request

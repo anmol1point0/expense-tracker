@@ -1,6 +1,6 @@
 package com.example.expenseTracker.models;
 
-public enum ExpenseType{
+public enum ExpenseType {
     EXPENSE,
     DUE
 }

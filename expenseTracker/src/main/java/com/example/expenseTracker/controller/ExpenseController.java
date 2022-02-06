@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -27,7 +28,7 @@ public class ExpenseController {
 
     private User user;
 
-    @PostMapping("/register")
+    @PostMapping("/registerUser")
     public ResponseEntity<String> registerUser(@RequestBody User user) {
         Boolean userRegistered = expenseService.registerUser(user);
         if (userRegistered) {
@@ -39,7 +40,7 @@ public class ExpenseController {
     }
 
     @GetMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody String emailAddress) {
+    public ResponseEntity<String> loginUser(@RequestParam String emailAddress) {
         user = expenseService.login(emailAddress);
         if (Objects.isNull(user)) {
             return new ResponseEntity<>("Email: " + emailAddress + " not Present in DB, Please register First",

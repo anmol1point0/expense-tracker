@@ -1,10 +1,7 @@
 package com.example.expenseTracker.services;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -19,11 +16,9 @@ import com.example.expenseTracker.models.ExpenseRequest;
 import com.example.expenseTracker.models.ExpenseType;
 import com.example.expenseTracker.models.User;
 
-import org.apache.tomcat.jni.Local;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 @Service
 public class ExpenseService {
@@ -76,20 +71,27 @@ public class ExpenseService {
         }
     }
 
-    private void setup(ExpenseRequest transactionRequest) {
-        transactionRequest.setPaymentTimestamp(LocalDateTime.now());
-    }
-
+    /*
+     * Purpose: Setting the flag according to due remaining for this expense
+     * if paidAmount < actual Amount
+     * isSettled = false
+     * else
+     * isSettled = true
+     */
     private void setupForDue(ExpenseRequest expenseRequest, Boolean isSettled) {
         expenseRequest.setIsSettled(isSettled);
     }
 
+    /*
+     * Purpose: Recording an Expense Only transaction in DB.
+     */
     public void recordTransaction(ExpenseRequest expenseRequest) {
-        setup(expenseRequest);
         BigDecimal expense = expenseRequest.getExpense();
         BigDecimal paidAmount = expenseRequest.getPaidAmount();
         BigDecimal due = expense.subtract(paidAmount);
         expenseRequest.setDuePayment(due);
+        expenseRequest.setPaymentTimestamp(LocalDateTime.now());
+        // The expense is not paid in full
         if (due.doubleValue() > 0.0) {
             setupForDue(expenseRequest, false);
         } else {
@@ -99,13 +101,17 @@ public class ExpenseService {
         expensesRepository.save(expenseRequest);
     }
 
+    /*
+     * Fetches list of all Expenses (excluding due settle requests) of the user
+     */
     public List<Expense> getUserExpenses(String uid) {
-        System.out.println("transactionRepositopry is :" + expensesRepository);
-        System.out.println("uid: " + uid);
         List<Expense> usertransactions = expensesRepository.findByUidAndExpense(uid, ExpenseType.EXPENSE);
         return usertransactions;
     }
 
+    /*
+     * Purpose: Fetches list of all dues remaining for the user
+     */
     public List<Due> getAllDues(String uid) {
         List<Expense> unsettledTransactions = expensesRepository.findByUidAndDues(uid, false);
         ModelMapper modelMapper = new ModelMapper();
@@ -116,11 +122,14 @@ public class ExpenseService {
         return usertransactions;
     }
 
+    /*
+     * Purpose: Handles due settling requests for the user
+     * input: Amount,
+     */
     private void setupAndInsertDuePaidRequest(ExpenseRequest expenseRequest, BigDecimal duePayment,
             String paymentGateway) {
-        // Inserting the payment of this due
+        // Making the record of this due settlement request
         ExpenseRequest duePaidRequest = new ExpenseRequest(expenseRequest);
-        System.out.println("due paid request: " + duePaidRequest.getPaidAmount());
         duePaidRequest.setExpense(duePayment);
         duePaidRequest.setPaidAmount(duePayment);
         duePaidRequest.setPaymentTimestamp(LocalDateTime.now());
@@ -131,39 +140,59 @@ public class ExpenseService {
         expensesRepository.save(duePaidRequest);
     }
 
+    /*
+     * Purpose: Updates the existing documents in DB to take due settled requests.
+     * Impact: Always have updated expense status for every expense.
+     */
+    private void updateExpense(ExpenseRequest expenseRequest, BigDecimal duePayment, BigDecimal paid) {
+        BigDecimal paidAmount = expenseRequest.getPaidAmount();
+        expenseRequest.setPaymentTimestamp(LocalDateTime.now());
+        expenseRequest.setPaidAmount(paidAmount.add(paid));
+        expenseRequest.setDuePayment(duePayment.subtract(paid));
+        expensesRepository.save(expenseRequest);
+    }
+
+    /*
+     * This function settles dues in order of the entry in input list of dues
+     * input:
+     * userDues: List of dues
+     * amount: Total amount provided by user
+     * paymentGateway: Which payment gateway
+     * 
+     * output:
+     * Boolean: If due is settled and update the expenses accordingly.
+     * 
+     */
     private boolean duesSettleInorder(List<Due> userDues, BigDecimal amount, String paymentGateway) {
         for (Due userDue : userDues) {
-            System.out.println("user is :" + userDue.getItemName());
             BigDecimal duePayment = userDue.getDuePayment();
             String expenseId = userDue.getExpenseId();
             Optional<ExpenseRequest> expenseRequestOptional = expensesRepository.findById(expenseId);
+            /*
+             * amount <=0 : break
+             * amount>duePayment : pay the due amount in full
+             * amount<duePayment : pay whole amount.
+             */
             if (amount.doubleValue() <= 0.0)
                 break;
             else if (expenseRequestOptional.isPresent()) {
                 ExpenseRequest expenseRequest = expenseRequestOptional.get();
-                BigDecimal paidAmount = expenseRequest.getPaidAmount();
                 // If remaining amount is more than due amount, pay in full.
                 if (amount.compareTo(duePayment) >= 0) {
-                    System.out.println("full present");
                     expenseRequest.setIsSettled(true);
-                    expenseRequest.setPaidAmount(paidAmount.add(duePayment));
-                    expenseRequest.setDuePayment(BigDecimal.valueOf(0.0));
-                    expensesRepository.save(expenseRequest);
+                    // pay in full
+                    updateExpense(expenseRequest, duePayment, duePayment);
                     setupAndInsertDuePaidRequest(expenseRequest, duePayment, paymentGateway);
                     amount = amount.subtract(duePayment);
                 }
                 // if smaller, pay maximum
                 else if (amount.compareTo(duePayment) < 0) {
-                    System.out.println("partial present");
-                    expenseRequest.setPaidAmount(paidAmount.add(amount));
-                    expenseRequest.setDuePayment(duePayment.subtract(amount));
-                    System.out.println("paid amount: " + expenseRequest.getPaidAmount());
-                    expensesRepository.save(expenseRequest);
+                    // pay maximum
+                    updateExpense(expenseRequest, duePayment, amount);
                     setupAndInsertDuePaidRequest(expenseRequest, amount, paymentGateway);
                     amount = BigDecimal.valueOf(0.0);
                 } else
                     break;
-                System.out.println("Value of Amount: " + amount.doubleValue());
             } else {
                 return false;
             }
@@ -176,6 +205,8 @@ public class ExpenseService {
      * method
      * 1: First in first out - the due added first will be paid first
      * 2: Latest repayment date first - the due that is nearest will be paid first
+     * 
+     * output: Returns list of updated dues.
      */
     public List<Due> settleDues(String uid, BigDecimal amount, Integer duePaymentStrategy, String paymentGateway) {
         // Getting all the unsettled transactions for a given user.
@@ -183,10 +214,11 @@ public class ExpenseService {
         Boolean dueSettled = false;
         switch (duePaymentStrategy) {
             case 1:
-                System.out.println("Reached inside switch");
+                // FIFO
                 dueSettled = duesSettleInorder(userDues, amount, paymentGateway);
                 break;
             case 2:
+                // Latest repayment date first - the due that is nearest will be paid first
                 Collections.sort(userDues, Due.DueDateComparator);
                 dueSettled = duesSettleInorder(userDues, amount, paymentGateway);
                 break;
@@ -197,13 +229,15 @@ public class ExpenseService {
             return null;
     }
 
+    /*
+     * Purpose: Returns history of all due settling requests in reverse(latest
+     * settle request first)
+     * Input: user id, ExpeneType
+     * Output: List of expense which were due settling requests.
+     */
     public List<Expense> getAllSettledDues(String uid) {
-        return expensesRepository.findByUidAndDues(uid, true);
-    }
-
-    public static void main(String[] args) {
-        ExpenseService userService = new ExpenseService();
-        User user = userService.getUser("random");
-        Assert.isTrue(user == null, "test passed");
+        List<Expense> duesSettlingRequestsHistory = expensesRepository.findByUidAndExpense(uid, ExpenseType.DUE);
+        Collections.reverse(duesSettlingRequestsHistory);
+        return duesSettlingRequestsHistory;
     }
 }
