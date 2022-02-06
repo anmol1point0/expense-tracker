@@ -103,3 +103,6 @@ After the service is up, Please navigate to [Testing](http://localhost:8080/swag
 2. Input data validation is not happening
     * Impact:
         * If amount is greater than required dues amount then refunding the amount and for next request user has to give the money again(No wallet).
+
+## Low Hanging Fruits
+* Can use store id/store name to filter out data to get the dues remaining on a store as a whole.
