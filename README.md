@@ -61,25 +61,25 @@ After the service is up, Please navigate to [Testing](http://localhost:8080/swag
     * user-name@domain.com.
     * username@.com
 2. One time login with registered email Address is *mandatory*
-    2.1 A default email is present i.e. anmol15554@gmail.com
+    * A default email is present i.e. anmol15554@gmail.com
 3. Date format should be in `dd/mm/yyyy`
 4. There is no option for deleting the data, please login with different email address to perform fresh set of operations.
 
 ## Steps
 1.  Open [API contracts](http://localhost:8080/swagger-ui/index.html#)
-1.  Register/login with a valid email address.
-2.  Record an expense (Only 6 fields are enough from user POV)
+2.  Register/login with a valid email address.
+3.  Record an expense (Only 6 fields are enough from user POV)
     * A sample
       `{
-          "itemName": "Headsets",
-          "expense": 1000,
-          "paidAmount": 500,
-          "paymentMethod": "UPI",
-          "dueDate": "10/02/2022",
-          "recipient": "Amazon"
-      }`
- 3. Find All dues for the user
- 4. Settle dues by giving
+          "itemName": "item1",
+          "recipient" : "Amazon",
+          "expenseAmount": 300.0,
+          "paidAmount": 200.0,
+          "paymentMethod": "Google pay",
+          "dueDate" : "10/02/2000"
+       }`
+ 4. Find All dues for the user
+ 5. Settle dues by giving
     * A sample
       `{
           "amount": 500,
@@ -89,7 +89,7 @@ After the service is up, Please navigate to [Testing](http://localhost:8080/swag
             * duePaymentStrategy 
               * 1 - First in first out - the due added first will be paid first
               * 2 - Latest repayment date first - the due that is nearest will be paid first
-  5. Get all dues Request history 
+  6. Get all dues Request history 
 
 ## Assumptions
 1. *No store preference* - Settling the dues according to data entered and order provided irrespective of where it is spent.
@@ -103,8 +103,3 @@ After the service is up, Please navigate to [Testing](http://localhost:8080/swag
 2. Input data validation is not happening
     * Impact:
         * If amount is greater than required dues amount then refunding the amount and for next request user has to give the money again(No wallet).
- 
-
-
-
-

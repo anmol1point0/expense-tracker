@@ -42,7 +42,7 @@ public class ExpenseController {
     public ResponseEntity<String> registerUser(@RequestBody User user) {
         if (!patternMatches(user.getEmailAddress())) {
             return new ResponseEntity<>("Email adress " + user.getEmailAddress()
-                    + " format not valid",
+                    + " format not valid, Please refer README.md",
                     HttpStatus.BAD_REQUEST);
         }
         Boolean userRegistered = expenseService.registerUser(user);
@@ -58,7 +58,7 @@ public class ExpenseController {
     public ResponseEntity<String> loginUser(@RequestParam String emailAddress) {
         if (!patternMatches(emailAddress)) {
             return new ResponseEntity<>("Email adress " + emailAddress
-                    + " format not valid",
+                    + " format not valid, Please refer README.md",
                     HttpStatus.BAD_REQUEST);
         }
         user = expenseService.login(emailAddress);
