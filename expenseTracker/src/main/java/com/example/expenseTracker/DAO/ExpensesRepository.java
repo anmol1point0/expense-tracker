@@ -1,4 +1,4 @@
-package com.example.expenseTracker.DAO;
+package com.example.expenseTracker.dao;
 
 import java.util.List;
 
@@ -17,5 +17,5 @@ public interface ExpensesRepository extends MongoRepository<ExpenseRequest, Stri
     List<Expense> findByUidAndExpense(String uid, ExpenseType expenseType);
 
     @Query("{uid : ?0, isSettled: ?1}")
-    List<Expense> findByUidAndDues(String uid, Boolean isSettled);
+    List<Expense> findByUidAndIsSettled(String uid, Boolean isSettled);
 }

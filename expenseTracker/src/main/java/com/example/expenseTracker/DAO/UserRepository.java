@@ -1,4 +1,4 @@
-package com.example.expenseTracker.DAO;
+package com.example.expenseTracker.dao;
 
 import com.example.expenseTracker.models.User;
 

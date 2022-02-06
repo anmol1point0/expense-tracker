@@ -23,7 +23,7 @@ public class Expense {
     @Id
     private String transactionId;
     private String uid;
-    private BigDecimal expense;
+    private BigDecimal expenseAmount;
     private BigDecimal paidAmount;
     private BigDecimal duePayment;
     private String paymentMethod;
@@ -34,7 +34,7 @@ public class Expense {
 
     // @JsonDeserialize(using = LocalDateDeserializer.class)
     // @JsonSerialize(using = LocalDateSerializer.class)
-    private LocalDateTime paymentTimestamp;
+    private LocalDateTime creationTimestamp;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     @JsonDeserialize(using = LocalDateDeserializer.class)

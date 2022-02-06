@@ -28,11 +28,11 @@ public class ExpenseRequest {
     private String expenseId;
     private String uid;
     private String itemName;
-    private BigDecimal expense;
+    private BigDecimal expenseAmount;
     private BigDecimal paidAmount;
     private BigDecimal duePayment;
     private String paymentMethod;
-    private LocalDateTime paymentTimestamp;
+    private LocalDateTime creationTimestamp;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     @JsonDeserialize(using = LocalDateDeserializer.class)
@@ -51,11 +51,11 @@ public class ExpenseRequest {
         this.uid = expenseRequest.getUid();
         this.recipient = expenseRequest.getRecipient();
         this.itemName = expenseRequest.getItemName();
-        this.expense = expenseRequest.getExpense();
+        this.expenseAmount = expenseRequest.getExpenseAmount();
         this.paidAmount = expenseRequest.getPaidAmount();
         this.duePayment = expenseRequest.getDuePayment();
         this.paymentMethod = expenseRequest.getPaymentMethod();
-        this.paymentTimestamp = expenseRequest.getPaymentTimestamp();
+        this.creationTimestamp = expenseRequest.getCreationTimestamp();
         this.dueDate = expenseRequest.getDueDate();
         this.isSettled = expenseRequest.getIsSettled();
         this.expenseType = expenseRequest.getExpenseType();

@@ -8,8 +8,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.example.expenseTracker.DAO.ExpensesRepository;
-import com.example.expenseTracker.DAO.UserRepository;
+import com.example.expenseTracker.dao.ExpensesRepository;
+import com.example.expenseTracker.dao.UserRepository;
 import com.example.expenseTracker.models.Due;
 import com.example.expenseTracker.models.Expense;
 import com.example.expenseTracker.models.ExpenseRequest;
@@ -86,11 +86,11 @@ public class ExpenseService {
      * Purpose: Recording an Expense Only transaction in DB.
      */
     public void recordTransaction(ExpenseRequest expenseRequest) {
-        BigDecimal expense = expenseRequest.getExpense();
+        BigDecimal expense = expenseRequest.getExpenseAmount();
         BigDecimal paidAmount = expenseRequest.getPaidAmount();
         BigDecimal due = expense.subtract(paidAmount);
         expenseRequest.setDuePayment(due);
-        expenseRequest.setPaymentTimestamp(LocalDateTime.now());
+        expenseRequest.setCreationTimestamp(LocalDateTime.now());
         // The expense is not paid in full
         if (due.doubleValue() > 0.0) {
             setupForDue(expenseRequest, false);
@@ -113,7 +113,7 @@ public class ExpenseService {
      * Purpose: Fetches list of all dues remaining for the user
      */
     public List<Due> getAllDues(String uid) {
-        List<Expense> unsettledTransactions = expensesRepository.findByUidAndDues(uid, false);
+        List<Expense> unsettledTransactions = expensesRepository.findByUidAndIsSettled(uid, false);
         ModelMapper modelMapper = new ModelMapper();
         List<Due> usertransactions = unsettledTransactions.stream()
                 .map(unsettledTransaction -> modelMapper.map(unsettledTransaction,
@@ -130,9 +130,8 @@ public class ExpenseService {
             String paymentGateway) {
         // Making the record of this due settlement request
         ExpenseRequest duePaidRequest = new ExpenseRequest(expenseRequest);
-        duePaidRequest.setExpense(duePayment);
+        duePaidRequest.setExpenseAmount(duePayment);
         duePaidRequest.setPaidAmount(duePayment);
-        duePaidRequest.setPaymentTimestamp(LocalDateTime.now());
         duePaidRequest.setExpenseType(ExpenseType.DUE);
         duePaidRequest.setPaymentMethod(paymentGateway);
         duePaidRequest.setIsSettled(true);
@@ -146,7 +145,6 @@ public class ExpenseService {
      */
     private void updateExpense(ExpenseRequest expenseRequest, BigDecimal duePayment, BigDecimal paid) {
         BigDecimal paidAmount = expenseRequest.getPaidAmount();
-        expenseRequest.setPaymentTimestamp(LocalDateTime.now());
         expenseRequest.setPaidAmount(paidAmount.add(paid));
         expenseRequest.setDuePayment(duePayment.subtract(paid));
         expensesRepository.save(expenseRequest);

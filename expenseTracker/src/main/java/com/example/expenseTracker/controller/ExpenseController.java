@@ -2,6 +2,7 @@ package com.example.expenseTracker.controller;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import com.example.expenseTracker.models.Due;
 import com.example.expenseTracker.models.DueRequest;
@@ -28,8 +29,22 @@ public class ExpenseController {
 
     private User user;
 
+    private String emailRegexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
+            + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+
+    public Boolean patternMatches(String emailAddress) {
+        return Pattern.compile(emailRegexPattern)
+                .matcher(emailAddress)
+                .matches();
+    }
+
     @PostMapping("/registerUser")
     public ResponseEntity<String> registerUser(@RequestBody User user) {
+        if (!patternMatches(user.getEmailAddress())) {
+            return new ResponseEntity<>("Email adress " + user.getEmailAddress()
+                    + " format not valid",
+                    HttpStatus.BAD_REQUEST);
+        }
         Boolean userRegistered = expenseService.registerUser(user);
         if (userRegistered) {
             return new ResponseEntity<>("User: " + user.getUserName() + " successfully registered", HttpStatus.OK);
@@ -41,6 +56,11 @@ public class ExpenseController {
 
     @GetMapping("/login")
     public ResponseEntity<String> loginUser(@RequestParam String emailAddress) {
+        if (!patternMatches(emailAddress)) {
+            return new ResponseEntity<>("Email adress " + emailAddress
+                    + " format not valid",
+                    HttpStatus.BAD_REQUEST);
+        }
         user = expenseService.login(emailAddress);
         if (Objects.isNull(user)) {
             return new ResponseEntity<>("Email: " + emailAddress + " not Present in DB, Please register First",
@@ -54,6 +74,10 @@ public class ExpenseController {
     public ResponseEntity<String> recordExpense(@RequestBody ExpenseRequest transactionRequest) {
         if (Objects.isNull(user)) {
             return new ResponseEntity<>("Please login to record a transaction ", HttpStatus.BAD_REQUEST);
+        } else if (transactionRequest.getPaidAmount().compareTo(transactionRequest.getExpenseAmount()) > 0) {
+            return new ResponseEntity<>("Paid amount: " + transactionRequest.getPaidAmount() +
+                    " cannot be greater than expenseAmount: " + transactionRequest.getExpenseAmount(),
+                    HttpStatus.BAD_REQUEST);
         }
         transactionRequest.setExpenseType(ExpenseType.EXPENSE);
         transactionRequest.setUid(user.getUid());

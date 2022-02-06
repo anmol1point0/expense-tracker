@@ -61,6 +61,7 @@ After the service is up, Please navigate to [Testing](http://localhost:8080/swag
     * user-name@domain.com.
     * username@.com
 2. One time login with registered email Address is *mandatory*
+    2.1 A default email is present i.e. anmol15554@gmail.com
 3. Date format should be in `dd/mm/yyyy`
 4. There is no option for deleting the data, please login with different email address to perform fresh set of operations.
 
@@ -77,19 +78,18 @@ After the service is up, Please navigate to [Testing](http://localhost:8080/swag
           "dueDate": "10/02/2022",
           "recipient": "Amazon"
       }`
- 3. Get all expenses
- 4. Find All dues for the user
- 5. Settle dues by giving
+ 3. Find All dues for the user
+ 4. Settle dues by giving
     * A sample
       `{
           "amount": 500,
           "duePaymentStrategy": 1,
           "paymentGateway": "string"
         }`
-     * duePaymentStrategy 
-          * 1 - First in first out - the due added first will be paid first
-          * 2 - Latest repayment date first - the due that is nearest will be paid first
-  6. Get all dues Request history 
+            * duePaymentStrategy 
+              * 1 - First in first out - the due added first will be paid first
+              * 2 - Latest repayment date first - the due that is nearest will be paid first
+  5. Get all dues Request history 
 
 ## Assumptions
 1. *No store preference* - Settling the dues according to data entered and order provided irrespective of where it is spent.
