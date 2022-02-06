@@ -86,9 +86,9 @@ After the service is up, Please navigate to [Testing](http://localhost:8080/swag
           "duePaymentStrategy": 1,
           "paymentGateway": "string"
         }`
-            * duePaymentStrategy 
-              * 1 - First in first out - the due added first will be paid first
-              * 2 - Latest repayment date first - the due that is nearest will be paid first
+     * duePaymentStrategy 
+         *  1: First in first out - the due added first will be paid first
+         *  2: Latest repayment date first - the due that is nearest will be paid first
   6. Get all dues Request history 
 
 ## Assumptions
