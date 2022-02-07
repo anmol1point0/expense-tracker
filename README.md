@@ -19,8 +19,7 @@ Following tasks have been completed:
 * To view the API contracts, please visit [Api contracts](http://localhost:8080/swagger-ui/index.html#/)
 
 ## Platform
-  OS: Windows 11 <br />
-  Version: 21H2 <br />
+  OS: Windows <br />
   IDE : Visual Studio Code <br />
   
 ## Technology/Tools Used
@@ -93,16 +92,15 @@ After the service is up, Please navigate to [Testing](http://localhost:8080/swag
 
 ## Assumptions
 1. *No store preference* - Settling the dues according to data entered and order provided irrespective of where it is spent.
-2. User cannot give more than expected amount in an expense.
   
 ## Limitations
 1. Since the dues settlement request comes according to ordering of data(FIFO), updating the initial request for every dues settelment to make sure the one which comes first should go first.
     * Impact:
-        * User will not be able to see the old dues settled for a given expense
+        * User will see the updated amount in the expense, while fetching it. For getting the history, have to fetch it from duesHistory api.
   
 2. Input data validation is not happening
     * Impact:
         * If amount is greater than required dues amount then refunding the amount and for next request user has to give the money again(No wallet).
 
 ## Low Hanging Fruits
-* Can use store id/store name to filter out data to get the dues remaining on a store as a whole.
+* Can use store id/store name to filter out data to get the dues remaining on a particular store
